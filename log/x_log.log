@@ -1,0 +1,80 @@
+2024-11-13 19:17:52,068 - DEBUG [api] Initialize logger api
+2024-11-13 19:28:07,532 - INFO [api] admin密码重置为password
+2024-11-13 20:29:01,667 - DEBUG [api] Initialize logger api
+2024-11-13 20:30:45,083 - DEBUG [api] Initialize logger api
+2024-11-13 20:31:51,803 - ERROR [api] 接口:/approve/approve，审批工单失败，失败原因：审批工单不存在
+2024-11-13 20:40:55,649 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 20:41:07,573 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:07:05,415 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:07:28,367 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:07:29,807 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:07:36,174 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:07:38,895 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:07:53,344 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:08:16,153 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:08:23,230 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:08:24,461 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:08:49,740 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:09:08,814 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:12:11,962 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:12:15,744 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:12:16,768 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:13:16,748 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:13:26,854 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:14:05,454 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:14:11,208 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-13 22:14:37,841 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：你没有权限操作
+2024-11-14 00:21:34,119 - DEBUG [api] Initialize logger api
+2024-11-14 00:36:31,648 - DEBUG [api] Initialize logger api
+2024-11-14 00:37:31,869 - DEBUG [api] Initialize logger api
+2024-11-14 00:39:52,316 - DEBUG [api] Initialize logger api
+2024-11-14 08:37:15,218 - DEBUG [api] Initialize logger api
+2024-11-14 08:43:21,360 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：错误: (pymysql.err.OperationalError) (1054, "Unknown column 'sys_approve.create_time' in 'field list'")
+[SQL: SELECT count(*) AS count_1 
+FROM (SELECT sys_approve.id AS sys_approve_id, sys_approve.room_id AS sys_approve_room_id, sys_approve.manager_id AS sys_approve_manager_id, sys_approve.user_id AS sys_approve_user_id, sys_approve.pro_status AS sys_approve_pro_status, sys_approve.app_status AS sys_approve_app_status, sys_approve.create_time AS sys_approve_create_time, sys_approve.notes AS sys_approve_notes 
+FROM sys_approve 
+WHERE sys_approve.pro_status = false) AS anon_1]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2024-11-14 08:43:29,605 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：错误: (pymysql.err.OperationalError) (1054, "Unknown column 'sys_approve.create_time' in 'field list'")
+[SQL: SELECT count(*) AS count_1 
+FROM (SELECT sys_approve.id AS sys_approve_id, sys_approve.room_id AS sys_approve_room_id, sys_approve.manager_id AS sys_approve_manager_id, sys_approve.user_id AS sys_approve_user_id, sys_approve.pro_status AS sys_approve_pro_status, sys_approve.app_status AS sys_approve_app_status, sys_approve.create_time AS sys_approve_create_time, sys_approve.notes AS sys_approve_notes 
+FROM sys_approve 
+WHERE sys_approve.pro_status = true) AS anon_1]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2024-11-14 08:43:45,306 - ERROR [api] 接口:/approve/list，获取工单列表失败，失败原因：错误: (pymysql.err.OperationalError) (1054, "Unknown column 'sys_approve.create_time' in 'field list'")
+[SQL: SELECT count(*) AS count_1 
+FROM (SELECT sys_approve.id AS sys_approve_id, sys_approve.room_id AS sys_approve_room_id, sys_approve.manager_id AS sys_approve_manager_id, sys_approve.user_id AS sys_approve_user_id, sys_approve.pro_status AS sys_approve_pro_status, sys_approve.app_status AS sys_approve_app_status, sys_approve.create_time AS sys_approve_create_time, sys_approve.notes AS sys_approve_notes 
+FROM sys_approve 
+WHERE sys_approve.pro_status = false) AS anon_1]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2024-11-14 08:51:56,380 - ERROR [api] 接口:/approve/open，直接开门失败，失败原因：申请失败，原因：(pymysql.err.ProgrammingError) (1146, "Table 'certification.sys_open' doesn't exist")
+[SQL: INSERT INTO sys_open (room_id, room_name, pro_status, open_status, create_time) VALUES (%(room_id)s, %(room_name)s, %(pro_status)s, %(open_status)s, %(create_time)s)]
+[parameters: {'room_id': 122, 'room_name': '绵阳涪城六八局站综合机房', 'pro_status': 0, 'open_status': 0, 'create_time': datetime.datetime(2024, 11, 14, 0, 51, 56, 376794)}]
+(Background on this error at: https://sqlalche.me/e/14/f405)
+2024-11-14 08:55:18,691 - ERROR [api] 接口:/approve/open，直接开门失败，失败原因：申请失败，原因：(pymysql.err.ProgrammingError) (1146, "Table 'certification.sys_open' doesn't exist")
+[SQL: INSERT INTO sys_open (room_id, room_name, pro_status, open_status, create_time) VALUES (%(room_id)s, %(room_name)s, %(pro_status)s, %(open_status)s, %(create_time)s)]
+[parameters: {'room_id': 122, 'room_name': '绵阳涪城六八局站综合机房', 'pro_status': 0, 'open_status': 0, 'create_time': datetime.datetime(2024, 11, 14, 0, 55, 18, 674840)}]
+(Background on this error at: https://sqlalche.me/e/14/f405)
+2024-11-14 08:59:47,053 - ERROR [api] 接口:/approve/open，直接开门失败，失败原因：申请失败，原因：(pymysql.err.ProgrammingError) (1146, "Table 'certification.sys_open' doesn't exist")
+[SQL: INSERT INTO sys_open (room_id, room_name, pro_status, open_status, create_time) VALUES (%(room_id)s, %(room_name)s, %(pro_status)s, %(open_status)s, %(create_time)s)]
+[parameters: {'room_id': 122, 'room_name': '绵阳涪城六八局站综合机房', 'pro_status': 0, 'open_status': 0, 'create_time': datetime.datetime(2024, 11, 14, 0, 59, 47, 51993)}]
+(Background on this error at: https://sqlalche.me/e/14/f405)
+2024-11-14 09:00:17,181 - ERROR [api] 接口:/room/get，获取用户信息失败，失败原因：未找到该机房
+2024-11-14 09:00:24,214 - ERROR [api] 接口:/approve/open，直接开门失败，失败原因：申请失败，原因：(pymysql.err.ProgrammingError) (1146, "Table 'certification.sys_open' doesn't exist")
+[SQL: INSERT INTO sys_open (room_id, room_name, pro_status, open_status, create_time) VALUES (%(room_id)s, %(room_name)s, %(pro_status)s, %(open_status)s, %(create_time)s)]
+[parameters: {'room_id': 122, 'room_name': '绵阳涪城六八局站综合机房', 'pro_status': 0, 'open_status': 0, 'create_time': datetime.datetime(2024, 11, 14, 1, 0, 24, 206152)}]
+(Background on this error at: https://sqlalche.me/e/14/f405)
+2024-11-14 09:03:35,464 - DEBUG [api] Initialize logger api
+2024-11-14 09:06:59,780 - DEBUG [api] Initialize logger api
+2024-11-14 09:44:22,012 - DEBUG [api] Initialize logger api
+2024-11-14 09:47:46,188 - ERROR [api] 接口:/room/get，获取用户信息失败，失败原因：未找到该机房
+2024-11-14 09:47:47,570 - ERROR [api] 接口:/room/get，获取用户信息失败，失败原因：未找到该机房
+2024-11-14 15:35:09,175 - DEBUG [api] Initialize logger api
+2024-11-14 16:21:29,663 - DEBUG [api] Initialize logger api
+2024-11-15 09:33:37,684 - DEBUG [api] Initialize logger api
+2024-11-15 09:35:26,354 - DEBUG [api] Initialize logger api
+2024-11-15 09:36:04,855 - DEBUG [api] Initialize logger api
+2024-11-15 10:13:55,049 - DEBUG [api] Initialize logger api
+2024-11-15 10:16:31,412 - DEBUG [api] Initialize logger api
+2024-11-15 10:16:42,830 - ERROR [api] 接口:/approve/open，直接开门失败，失败原因：申请失败，原因：'bool' object is not subscriptable
+2024-11-15 10:21:09,303 - DEBUG [api] Initialize logger api
