@@ -38,8 +38,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # 扩展 OAuth2PasswordRequestForm，使其支持 telephone 字段
 class ExtendedOAuth2PasswordRequestForm(OAuth2PasswordRequestForm):
-    def __init__(self, username: str = Form(...), password: str = Form(...), telephone: str = Form(...)):
-        super().__init__(username=username, password=password)
+    def __init__(self, username: str = Form(...), password: str = Form(None), telephone: str = Form(...)):
+        super().__init__(username=username)
+        self.password = password
         self.telephone = telephone
 
 
@@ -97,7 +98,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         username: str = payload.get("username")
         password: str = payload.get("password")
         telephone: str = payload.get("telephone")
-        if username is None or password is None or telephone is None:
+        if username is None or telephone is None:
             raise credentials_exception
     except jwt.PyJWTError:
         raise credentials_exception
