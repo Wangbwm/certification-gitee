@@ -114,7 +114,7 @@ if __name__ == '__main__':
     table_extra_data = table_extra_data.rename(columns={
         '姓名': 'username', '部门': 'role_id', '电话号码': 'telephone'
     })
-    table_extra_data['role_id'] = table_extra_data['role_id'].map(lambda x: 3 if x == '代维人员' else 2)
+    table_extra_data['role_id'] = table_extra_data['role_id'].map(lambda x: 3 if x == '施工队' else 2)
     try:
         # 遍历table_extra_data
         for index, row in table_extra_data.iterrows():

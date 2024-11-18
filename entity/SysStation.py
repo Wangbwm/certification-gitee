@@ -16,8 +16,9 @@ class SysStation(Base):
     equipmentId = Column(Integer, nullable=False)
     name = Column(String(255))
     controlId = Column(Integer, nullable=False)
+    status = Column(Boolean, nullable=False)
+    notes = Column(String(255))
 
     def __repr__(self):
-        return "<SysStation(stationArea='%s', stationType='%s', stationId='%s', stationName='%s', equipmentId='%s', name='%s', controlId='%s')>" % (
-            self.stationArea, self.stationType, self.stationId, self.stationName, self.equipmentId, self.name,
-            self.controlId)
+        return "<SysStation(stationId='%s', stationName='%s', equipmentId='%s', name='%s', controlId='%s', status='%s', notes='%s')>" \
+              % (self.stationId, self.stationName, self.equipmentId, self.name, self.controlId, self.status, self.notes)

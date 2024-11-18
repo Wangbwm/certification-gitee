@@ -7,6 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from entity.SysManager import SysManager
 from entity.SysRole import SysRole
 from entity.SysRoom import SysRoom
+from entity.SysStation import SysStation
 from entity.SysUser import SysUser
 from entity.SysUserRole import SysUserRole
 
@@ -27,6 +28,44 @@ Session = sessionmaker(bind=engine)
 def get_session():
     return Session()
 
+def get_manager_info(session: Session, manager_id: int):
+    """根据经理ID获取经理的相关信息"""
+    manager = session.query(SysManager).filter_by(id=manager_id).first()
+    if manager:
+        user = session.query(SysUser).filter_by(id=manager.user_id).first()
+        if user:
+            return {
+                'manager_name': user.username,
+                'manager_telephone': user.telephone
+            }
+    return {'manager_name': '', 'manager_telephone': ''}
+
+def get_sys_station_info(session: Session, station_name: str):
+    """根据站点名称获取站点状态和备注"""
+    station = session.query(SysStation).filter_by(stationName=station_name).first()
+    if station:
+        return {
+            'sys_status': station.status,
+            'sys_notes': station.notes
+        }
+    return {'sys_status': False, 'sys_notes': ''}
+
+def construct_rooms_dict_list(session: Session, all_rooms_list: list):
+    """根据房间列表构造房间字典列表"""
+    rooms_dict_list = [
+        {
+            "id": room.id,
+            "address": room.address,
+            "name": room.name,
+            "manager_id": room.manager_id,
+            **get_manager_info(session, room.manager_id),
+            "room_type": room.room_type,
+            "status": room.status,
+            "sys_name": room.sys_name,
+            **get_sys_station_info(session, room.sys_name)
+        } for room in all_rooms_list
+    ]
+    return rooms_dict_list
 
 def get_room_list(page):
     total_pages = 0
@@ -43,22 +82,8 @@ def get_room_list(page):
         # 计算总页数
         total_pages = math.ceil(total_count / page_size)
 
-        rooms_dict_list = [
-            {
-                "id": room.id,
-                "address": room.address,
-                "name": room.name,
-                "manager_id": room.manager_id,
-                "manager_name": session.query(SysUser)
-                .filter_by(id=session.query(SysManager).filter_by(id=room.manager_id).first().user_id).first().username,
-                "manager_telephone": session.query(SysUser)
-                .filter_by(
-                    id=session.query(SysManager).filter_by(id=room.manager_id).first().user_id).first().telephone,
-                "room_type": room.room_type,
-                "status": room.status,
-                "sys_name": room.sys_name
-            } for room in all_rooms_list
-        ]
+        # 调用方法构造 rooms_dict_list
+        rooms_dict_list = construct_rooms_dict_list(session, all_rooms_list)
         return True, f"成功", total_pages, rooms_dict_list
     except Exception as e:
         session.rollback()
@@ -74,23 +99,9 @@ def get_room_by_name(name):
         rooms = session.query(SysRoom).filter(SysRoom.name.like(f"%{name}%")).all()
 
         if rooms:
-            rooms_dict = [{
-                "id": room.id,
-                "address": room.address,
-                "name": room.name,
-                "manager_id": room.manager_id,
-                "manager_name": session.query(SysUser)
-                .filter_by(
-                    id=session.query(SysManager).filter_by(id=room.manager_id).first().user_id).first().username,
-                "manager_telephone": session.query(SysUser)
-                .filter_by(
-                    id=session.query(SysManager).filter_by(id=room.manager_id).first().user_id).first().telephone,
-                "room_type": room.room_type,
-                "status": room.status,
-                "sys_name": room.sys_name
-            } for room in rooms
-            ]
-            return True, rooms_dict
+            # 调用方法构造 rooms_dict_list
+            rooms_dict_list = construct_rooms_dict_list(session, rooms)
+            return True, rooms_dict_list
         return False, "未找到该机房"
     except Exception as e:
         session.rollback()
@@ -161,21 +172,10 @@ def get_room_by_id(room_id):
         room = session.query(SysRoom).filter_by(id=room_id).first()
         if not room:
             return False, "未找到该机房"
-        room = {
-            "id": room.id,
-            "address": room.address,
-            "name": room.name,
-            "manager_id": room.manager_id,
-            "manager_name": session.query(SysUser)
-            .filter_by(
-                id=session.query(SysManager).filter_by(id=room.manager_id).first().user_id).first().username,
-            "manager_telephone": session.query(SysUser)
-            .filter_by(
-                id=session.query(SysManager).filter_by(id=room.manager_id).first().user_id).first().telephone,
-            "room_type": room.room_type,
-            "status": room.status,
-            "sys_name": room.sys_name
-        }
+        all_rooms_list = [room]
+        # 调用方法构造 rooms_dict_list
+        rooms_dict_list = construct_rooms_dict_list(session, all_rooms_list)
+        room = rooms_dict_list[0]
         return True, room
     except Exception as e:
         session.rollback()

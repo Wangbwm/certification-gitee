@@ -10,7 +10,7 @@ class SysUser(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String(255), nullable=False)
-    password = Column(String(255), nullable=False)
+    password = Column(String(255))
     telephone = Column(String(20))
     create_time = Column(DateTime, nullable=False, default=datetime.utcnow)
 

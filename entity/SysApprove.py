@@ -14,6 +14,7 @@ class SysApprove(Base):
     user_id = Column(Integer, nullable=False)
     pro_status = Column(Boolean, nullable=False)
     app_status = Column(Boolean, nullable=False)
+    open_status = Column(Boolean, nullable=False)
     create_time = Column(DateTime, nullable=False, default=datetime.utcnow)
     notes = Column(String(255))
     def __repr__(self):

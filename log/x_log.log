@@ -78,3 +78,26 @@ WHERE sys_approve.pro_status = false) AS anon_1]
 2024-11-15 10:16:31,412 - DEBUG [api] Initialize logger api
 2024-11-15 10:16:42,830 - ERROR [api] 接口:/approve/open，直接开门失败，失败原因：申请失败，原因：'bool' object is not subscriptable
 2024-11-15 10:21:09,303 - DEBUG [api] Initialize logger api
+2024-11-15 15:09:37,407 - DEBUG [api] Initialize logger api
+2024-11-15 15:10:41,476 - DEBUG [api] Initialize logger api
+2024-11-15 15:11:33,572 - DEBUG [api] Initialize logger api
+2024-11-15 15:18:30,980 - DEBUG [api] Initialize logger api
+2024-11-15 15:19:36,826 - DEBUG [api] Initialize logger api
+2024-11-15 15:20:41,792 - DEBUG [api] Initialize logger api
+2024-11-15 15:36:13,335 - DEBUG [api] Initialize logger api
+2024-11-18 14:14:18,684 - DEBUG [api] Initialize logger api
+2024-11-18 14:21:46,030 - ERROR [api] 接口:/approve/open，直接开门失败，失败原因：申请失败，原因：(pymysql.err.IntegrityError) (1048, "Column 'open_status' cannot be null")
+[SQL: INSERT INTO sys_approve (room_id, manager_id, user_id, pro_status, app_status, open_status, create_time, notes) VALUES (%(room_id)s, %(manager_id)s, %(user_id)s, %(pro_status)s, %(app_status)s, %(open_status)s, %(create_time)s, %(notes)s)]
+[parameters: {'room_id': 822, 'manager_id': 106, 'user_id': 1, 'pro_status': 1, 'app_status': 1, 'open_status': None, 'create_time': datetime.datetime(2024, 11, 18, 6, 21, 46, 27185), 'notes': None}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2024-11-18 14:23:26,039 - DEBUG [api] Initialize logger api
+2024-11-18 14:24:43,205 - ERROR [api] 接口:/approve/error/me，获取工单列表失败，失败原因：{'message': 'Entity namespace for "sys_pho" has no property "approve_id"'}
+2024-11-18 14:27:07,311 - DEBUG [api] Initialize logger api
+2024-11-18 14:28:55,228 - DEBUG [api] Initialize logger api
+2024-11-18 14:37:09,420 - DEBUG [api] Initialize logger api
+2024-11-18 14:39:03,432 - DEBUG [api] Initialize logger api
+2024-11-18 14:40:14,485 - DEBUG [api] Initialize logger api
+2024-11-18 14:50:42,715 - ERROR [api] 接口:/open，开门失败，失败原因：开门失败，原因：'SysRoom' object has no attribute 'remote_open'
+2024-11-18 14:52:25,963 - DEBUG [api] Initialize logger api
+2024-11-18 14:52:29,616 - ERROR [api] 接口:/open，开门失败，失败原因：开门失败，原因：Entity namespace for "sys_station" has no property "station_name"
+2024-11-18 14:53:27,794 - DEBUG [api] Initialize logger api

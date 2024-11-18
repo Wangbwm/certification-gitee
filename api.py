@@ -1,19 +1,27 @@
+import os
+import uuid
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, List
 
 import jwt
-from fastapi import FastAPI, Depends, HTTPException, status, Body, Form
+from fastapi import FastAPI, Depends, HTTPException, status, Body, Form, UploadFile, File
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from starlette.staticfiles import StaticFiles
 
 from Utils.logger import log
-from dao import UserDao, RoleDao, ManagerDao, RoomDao, ApproveDao
+from dao import UserDao, RoleDao, ManagerDao, RoomDao, ApproveDao, PhoDao
 from entity.SysManager import SysManager
 from entity.SysRoom import SysRoom
 from entity.SysUser import SysUser
 
 # 创建FastAPI应用
 app = FastAPI()
+# 挂载静态文件目录
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
 logger = log()
 """
 设置CORS
@@ -32,14 +40,26 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 24 * 60
 # 初始密码
 INIT_PASSWORD = "password"
 
+# 照片文件夹
+PHOTO_DIR = "static/photos"
+
 # OAuth2PasswordBearer会创建一个依赖项来验证令牌
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+
+class PhotoResponse(BaseModel):
+    path: str
+    type: str
+
+
+class PhotographResponse(BaseModel):
+    photos: List[PhotoResponse]
 
 
 # 扩展 OAuth2PasswordRequestForm，使其支持 telephone 字段
 class ExtendedOAuth2PasswordRequestForm(OAuth2PasswordRequestForm):
     def __init__(self, username: str = Form(...), password: str = Form(None), telephone: str = Form(...)):
-        super().__init__(username=username)
+        super().__init__(username=username, password=password)
         self.password = password
         self.telephone = telephone
 
@@ -47,10 +67,17 @@ class ExtendedOAuth2PasswordRequestForm(OAuth2PasswordRequestForm):
 # 验证用户是否有效
 def authenticate_user(username: str, password: str, telephone: str):
     user = SysUser(username=username, password=password, telephone=telephone)
+    sys_user = UserDao.getUserByName(username, telephone)
+    role = RoleDao.get_role_by_user(sys_user.id)
+    if not role:
+        return False, f"用户权限不存在"
+    # 如果是施工队
+    if role[0].id == 3:
+        return True, user
     if UserDao.login(user)[0]:
-        return user
+        return True, user
     else:
-        return None
+        return False, f"用户检验失败"
 
 
 # 生成访问令牌
@@ -68,13 +95,14 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
 # 登录并获取Token的路由
 @app.post("/token", response_model=dict)
 async def login_for_access_token(form_data: ExtendedOAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(form_data.username, form_data.password, form_data.telephone)
-    if not user:
+    res = authenticate_user(form_data.username, form_data.password, form_data.telephone)
+    if not res[0]:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username/password/telephone",
+            detail=res[1],
             headers={"WWW-Authenticate": "Bearer"},
         )
+    user = res[1]
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={
@@ -103,6 +131,13 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     except jwt.PyJWTError:
         raise credentials_exception
     user = SysUser(username=username, password=password, telephone=telephone)
+    sys_user = UserDao.getUserByName(username, telephone)
+    if not sys_user:
+        raise credentials_exception
+    role = RoleDao.get_role_by_user(sys_user.id)
+    if role:
+        if role[0].id == 3:
+            return sys_user
     if UserDao.login(user)[0]:
         sys_user = UserDao.getUserByPassword(user)
         return sys_user
@@ -518,6 +553,22 @@ async def get_approve_list(pro_status: bool,
         raise HTTPException(status_code=403, detail=res[1])
 
 
+# 获得自己发起的审批工单
+@app.get("/approve/me", response_model=dict)
+async def get_approve_list(pro_status: bool,
+                           page: int = 1,
+                           current_user: SysUser = Depends(get_current_user)):
+    res = ApproveDao.get_approve_me(page, pro_status, current_user)
+    if res[0]:
+        return {
+            "total_pages": res[2],
+            "approves": res[3]
+        }
+    else:
+        logger.error(f"接口:/approve/me，获取工单列表失败，失败原因：{res[1]}")
+        raise HTTPException(status_code=403, detail=res[1])
+
+
 # 审批开门请求
 @app.post("/approve/approve", response_model=dict)
 async def approve_approve(approve_id: int = Body(required=True),
@@ -543,6 +594,127 @@ async def delete_approve(approve_id: int,
         return {"detail": res[1]}
     else:
         logger.error(f"接口:/approve/delete，删除工单失败，失败原因：{res[1]}")
+        raise HTTPException(status_code=403, detail=res[1])
+
+
+# 进入机房上传照片
+@app.post("/open/photograph/in", response_model=dict)
+async def open_photograph_in(
+        file: UploadFile = File(...),
+        approve_id: int = Form(...),
+        current_user: SysUser = Depends(get_current_user)):
+    # 如果不存在上传目录，则创建它
+    if not os.path.exists(PHOTO_DIR):
+        os.makedirs(PHOTO_DIR)
+    # 文件唯一UUID
+    filename = f"{uuid.uuid4()}_{file.filename}"
+
+    # 构建文件保存路径
+    file_location = os.path.join(PHOTO_DIR, filename)
+    with open(file_location, "wb+") as file_object:
+        file_object.write(file.file.read())
+    app_type = "in"
+    res = PhoDao.save_pho(file_location, approve_id, app_type)
+    if res[0]:
+        return {"detail": res[1]}
+    else:
+        logger.error(f"接口:/open/photograph/in，保存照片失败，失败原因：{res[1]}")
+        raise HTTPException(status_code=403, detail=res[1])
+
+
+# 开门
+@app.post("/open", response_model=dict)
+async def open_room(approve_id: int,
+                    current_user: SysUser = Depends(get_current_user)):
+    res = ApproveDao.open_room(approve_id, current_user)
+    if res[0]:
+        return {"detail": res[1]}
+    else:
+        logger.error(f"接口:/open，开门失败，失败原因：{res[1]}")
+        raise HTTPException(status_code=403, detail=res[1])
+
+
+# 出机房照片
+@app.post("/open/photograph/out", response_model=dict)
+async def open_photograph_out(
+        file: UploadFile = File(...),
+        approve_id: int = Form(...),
+        current_user: SysUser = Depends(get_current_user)):
+    # 如果不存在上传目录，则创建它
+    if not os.path.exists(PHOTO_DIR):
+        os.makedirs(PHOTO_DIR)
+    # 文件唯一UUID
+    filename = f"{uuid.uuid4()}_{file.filename}"
+    # 构建文件保存路径
+    file_location = os.path.join(PHOTO_DIR, filename)
+    with open(file_location, "wb+") as file_object:
+        file_object.write(file.file.read())
+    app_type = "out"
+    res = PhoDao.save_pho(file_location, approve_id, app_type)
+    if res[0]:
+        return {"detail": res[1]}
+    else:
+        logger.error(f"接口:/open/photograph/out，保存照片失败，失败原因：{res[1]}")
+        raise HTTPException(status_code=403, detail=res[1])
+
+
+# 关门
+@app.post("/close", response_model=dict)
+async def close_room(
+        approve_id: int,
+        current_user: SysUser = Depends(get_current_user)):
+    res = ApproveDao.close_room(approve_id, current_user)
+    if res[0]:
+        return {"detail": res[1]}
+    else:
+        logger.error(f"接口:/close，关门失败，失败原因：{res[1]}")
+        raise HTTPException(status_code=403, detail=res[1])
+
+
+# 获得异常工单
+@app.get("/approve/error/me", response_model=dict)
+async def get_approve_error_me(
+        page: int = 1,
+        current_user: SysUser = Depends(get_current_user)):
+    res = ApproveDao.get_approve_error_me(current_user, page)
+    if res[0]:
+        return {
+            "total_pages": res[1],
+            "approves": res[2]
+        }
+    else:
+        logger.error(f"接口:/approve/error/me，获取工单列表失败，失败原因：{res[1]}")
+        raise HTTPException(status_code=403, detail=res[1])
+
+
+# 超级用户获得异常工单
+@app.get("/approve/error/list", response_model=dict)
+async def get_approve_error_list(
+        page: int = 1,
+        current_user: SysUser = Depends(get_current_user)):
+    role_id = RoleDao.get_role_by_user(current_user.id)[0].id
+    if role_id != 1:
+        raise HTTPException(status_code=403, detail="No permission")
+    res = ApproveDao.get_approve_error_list(current_user, page)
+    if res[0]:
+        return {
+            "total_pages": res[1],
+            "approves": res[2]
+        }
+    else:
+        logger.error(f"接口:/approve/error/list，获取工单列表失败，失败原因：{res[1]}")
+        raise HTTPException(status_code=403, detail=res[1])
+
+# 获得照片
+@app.get("/approve/photograph", response_model=PhotographResponse)
+async def get_photograph(approve_id: int, current_user: SysUser = Depends(get_current_user)):
+    res = PhoDao.get_photograph(approve_id)
+    if res[0]:
+        photos_dict = res[1]
+        return {"photos": photos_dict}
+
+    else:
+        logger.error(f"接口:/approve/photograph，获取照片失败，失败原因：{res[1]}")
         raise HTTPException(status_code=403, detail=res[1])
 
 
