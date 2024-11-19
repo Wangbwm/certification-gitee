@@ -21,7 +21,6 @@ app = FastAPI()
 # 挂载静态文件目录
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-
 logger = log()
 """
 设置CORS
@@ -68,6 +67,8 @@ class ExtendedOAuth2PasswordRequestForm(OAuth2PasswordRequestForm):
 def authenticate_user(username: str, password: str, telephone: str):
     user = SysUser(username=username, password=password, telephone=telephone)
     sys_user = UserDao.getUserByName(username, telephone)
+    if not sys_user:
+        return False, f"用户不存在"
     role = RoleDao.get_role_by_user(sys_user.id)
     if not role:
         return False, f"用户权限不存在"
@@ -704,6 +705,7 @@ async def get_approve_error_list(
     else:
         logger.error(f"接口:/approve/error/list，获取工单列表失败，失败原因：{res[1]}")
         raise HTTPException(status_code=403, detail=res[1])
+
 
 # 获得照片
 @app.get("/approve/photograph", response_model=PhotographResponse)

@@ -32,43 +32,44 @@ Session = sessionmaker(bind=engine)
 def get_session():
     return Session()
 
-
 def create_station(station):
     session = get_session()
     try:
-        ex_station = session.query(SysStation).filter_by(stationId=station.stationId).first()
+        ex_station = session.query(SysStation).filter_by(stationName=station.stationName).first()
         if ex_station:
             raise Exception(f"已存在该站点{station.stationName}")
         else:
             session.add(station)
             session.commit()
             print(f"{station.stationName} 添加成功 ")
-            return True, f"添加成功"
+            return True
     except Exception as e:
         session.rollback()
         print(f"{station.stationName} 添加失败，原因：{e}")
-        return False, f"添加失败，原因：{e}"
+        return False
     finally:
         session.close()
 
-
 if __name__ == '__main__':
     # 读取原始数据
-    table_sheet_1 = pd.read_excel(PATH, sheet_name='Sheet1')
-    try:
-        # 遍历
-        for index, row in table_sheet_1.iterrows():
-            stationArea = row['stationArea']
-            stationType = row['stationType']
-            stationId = row['stationId']
-            stationName = row['stationName']
-            equipmentId = row['equipmentId']
-            name = row['name']
-            controlId = row['controlId']
-            station = SysStation(stationArea=stationArea, stationType=stationType,
-                                 stationId=stationId, stationName=stationName,
-                                 equipmentId=equipmentId, name=name, controlId=controlId, status=True)
-            create_station(station)
-
-    except Exception as e:
-        print('e')
+    table_sheet_1 = pd.read_excel(PATH, sheet_name='需核实填写')
+    # 提取表格式
+    df = pd.DataFrame(table_sheet_1)
+    # 保留第2、6、7、8列
+    df = df.iloc[:, [1, 8, 9, 10, 11]]
+    # 保留是否可远程开门列为空的数据
+    df = df[df['是否可远程开门'].isnull()]
+    # 去除动环名称列为空的数据
+    df = df[df['动环名称'].notnull()]
+    # 遍历
+    for index, row in df.iterrows():
+        stationArea = row['区县']
+        stationName = row['动环名称']
+        status = False
+        # 组合第3列和第5列的内容，处理 NaN 值
+        col3_value = '' if pd.isna(row[df.columns[2]]) else str(row[df.columns[2]])
+        col5_value = '' if pd.isna(row[df.columns[4]]) else str(row[df.columns[4]])
+        notes = f"{col3_value} + {col5_value}"
+        station = SysStation(stationArea=stationArea, stationName=stationName, notes=notes, status=status)
+        create_station(station)
+    print("数据处理完成")

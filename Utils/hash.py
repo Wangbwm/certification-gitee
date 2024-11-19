@@ -17,3 +17,8 @@ def hash_password(password):
 # 验证密码
 def verify_password(password, hashed_password):
     return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
+
+
+if __name__ == '__main__':
+    hash_pwd = hash_password("admin")
+    print(hash_pwd)
