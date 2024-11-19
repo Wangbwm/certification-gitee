@@ -150,3 +150,54 @@ def get_user_by_id(manager_id):
         return False, f"错误: {e}", None
     finally:
         session.close()
+
+
+def selectManagerByTelephone(params):
+    session = get_session()
+    try:
+        # 检查用户是否已存在
+        existing_user = session.query(SysManager).filter_by(telephone=params).all()
+        if existing_user:
+            user_list = [
+                session.query(SysUser).filter_by(id=manager.user_id).first()
+                for manager in existing_user
+            ]
+            # 处理可能的 None 值
+            valid_users = [user for user in user_list if user is not None]
+            return True, valid_users
+        else:
+            return False, "未找到机房长"
+    except Exception as e:
+        session.rollback()
+        print(e)
+        return None
+    finally:
+        session.close()
+
+
+def selectManagerByName(params):
+    session = get_session()
+    try:
+        # 检查用户是否已存在
+        existing_user = session.query(SysUser).filter(SysUser.username.like(f"%{params}%")).all()
+        if existing_user:
+            # 找到机房长
+            manager_list = [
+                session.query(SysManager).filter_by(user_id=user.id).first()
+                for user in existing_user
+            ]
+            # 处理可能的 None 值
+            valid_manager = [manager for manager in manager_list if manager is not None]
+            # 根据valid_manager的user_id筛选existing_user
+            existing_user = [user for user in existing_user if user.id in [manager.user_id for manager in valid_manager]]
+            if existing_user:
+                return True, existing_user
+            return False, "未找到机房长"
+        else:
+            return False, "未找到机房长"
+    except Exception as e:
+        session.rollback()
+        print(e)
+        return None
+    finally:
+        session.close()

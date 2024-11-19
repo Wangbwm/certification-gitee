@@ -234,3 +234,37 @@ def getUserByName(username, telephone):
         return None
     finally:
         session.close()
+
+
+def selectUserByTelephone(params):
+    session = get_session()
+    try:
+        # 检查用户是否已存在
+        existing_user = session.query(SysUser).filter_by(telephone=params).all()
+        if existing_user:
+            return True, existing_user
+        else:
+            return False, "未找到用户"
+    except Exception as e:
+        session.rollback()
+        print(e)
+        return None
+    finally:
+        session.close()
+
+
+def selectUserByName(params):
+    session = get_session()
+    try:
+        # 检查用户是否已存在 模糊搜索
+        existing_user = session.query(SysUser).filter(SysUser.username.like(f"%{params}%")).all()
+        if existing_user:
+            return True, existing_user
+        else:
+            return False, "未找到用户"
+    except Exception as e:
+        session.rollback()
+        print(e)
+        return None
+    finally:
+        session.close()

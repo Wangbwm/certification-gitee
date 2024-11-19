@@ -151,6 +151,18 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 async def read_users_me(current_user: SysUser = Depends(get_current_user)):
     return current_user
 
+@app.get("/users/select")
+async def select_user(params: str, current_user: SysUser = Depends(get_current_user)):
+    # 判断参数是用户名还是手机号
+    if params.isdigit():
+        res = UserDao.selectUserByTelephone(params)
+    else:
+        res = UserDao.selectUserByName(params)
+    if res[0]:
+        return {"detail": res[1]}
+    raise HTTPException(status_code=404, detail="User not found")
+
+
 
 # 管理员获取用户信息
 @app.get("/users/list", response_model=dict)
@@ -293,6 +305,18 @@ async def change_role(username: str = Body(required=True),
         return {"detail": res[1]}
     else:
         logger.error(f"接口:/users/change/role，用户角色修改失败，失败原因：{res[1]}")
+        raise HTTPException(status_code=403, detail=res[1])
+
+@app.get("/manager/select")
+async def select_manager(params: str, current_user: SysUser = Depends(get_current_user)):
+    if params.isdigit():
+        res = ManagerDao.selectManagerByTelephone(params)
+    else:
+        res = ManagerDao.selectManagerByName(params)
+    if res[0]:
+        return {"detail": res[1]}
+    else:
+        logger.error(f"接口:/manager/select，获取用户信息失败，失败原因：{res[1]}")
         raise HTTPException(status_code=403, detail=res[1])
 
 
