@@ -5,13 +5,21 @@ from sqlalchemy.orm import sessionmaker
 
 import yaml
 
+# 获取当前文件的绝对路径
+current_file_path = os.path.abspath(__file__)
+
+# 获取当前文件所在目录的上一级目录
+parent_dir = os.path.dirname(os.path.dirname(current_file_path))
+
+# 构建文件路径
+file_path = os.path.join(parent_dir, 'config', 'database.yaml')
 
 def get_db_config():
     # 获取环境变量，如果ENV变量没有设置，则默认为'dev'
     env = os.getenv('ENV', 'dev')
 
     # 根据环境变量加载相应的数据库配置
-    with open('config/database.yaml', 'r') as file:
+    with open(file_path, 'r') as file:
         db_config = yaml.safe_load(file)
 
     # 检查环境变量是否有效，并选择相应的配置
