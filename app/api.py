@@ -19,7 +19,7 @@ from app.entity.SysUser import SysUser
 # 创建FastAPI应用
 app = FastAPI()
 # 挂载静态文件目录
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/app/static", StaticFiles(directory="static"), name="static")
 
 logger = log()
 """
@@ -40,7 +40,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 24 * 60
 INIT_PASSWORD = "password"
 
 # 照片文件夹
-PHOTO_DIR = "static/photos"
+PHOTO_DIR = "app/static/photos"
 
 # OAuth2PasswordBearer会创建一个依赖项来验证令牌
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
