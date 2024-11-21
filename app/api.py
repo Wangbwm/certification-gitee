@@ -16,17 +16,10 @@ from app.entity.SysManager import SysManager
 from app.entity.SysRoom import SysRoom
 from app.entity.SysUser import SysUser
 
-# 获取当前文件的绝对路径
-current_file_path = os.path.dirname(os.path.abspath(__file__))
-
-
-# 构建文件路径
-static_path = os.path.join(current_file_path, 'static')
-photos_path = os.path.join(static_path, 'photos')
 # 创建FastAPI应用
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory=static_path), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 logger = log()
 """
@@ -47,7 +40,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 24 * 60
 INIT_PASSWORD = "password"
 
 # 照片文件夹
-PHOTO_DIR = photos_path
+PHOTO_DIR = "static/photos"
 
 # OAuth2PasswordBearer会创建一个依赖项来验证令牌
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
