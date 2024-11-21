@@ -5,7 +5,7 @@ mysql:
     user: root
     password: '123456'
     database: certification
-  pro:
+  app:
     host: 113.45.195.128
     port: 3306
     user: root
