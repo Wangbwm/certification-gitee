@@ -127,7 +127,7 @@ def approve_open(current_user, room_id, notes):
         if not room:
             return False, f"申请机房不存在"
         approve = SysApprove(room_id=room_id, manager_id=room.manager_id, user_id=current_user.id, pro_status=False,
-                             app_status=False, notes=notes)
+                             app_status=False, notes=notes, open_status=False)
         session.add(approve)
         session.flush()
         session.commit()
