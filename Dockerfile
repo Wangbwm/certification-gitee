@@ -5,6 +5,6 @@ ENV ENV=pro
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir --upgrade -r ./requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip install --no-cache-dir --upgrade -r ../requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8081"]
