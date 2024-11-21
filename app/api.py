@@ -11,10 +11,10 @@ from pydantic import BaseModel
 from starlette.staticfiles import StaticFiles
 
 from .Utils.logger import log
-from dao import UserDao, RoleDao, ManagerDao, RoomDao, ApproveDao, PhoDao
-from entity.SysManager import SysManager
-from entity.SysRoom import SysRoom
-from entity.SysUser import SysUser
+from .dao import UserDao, RoleDao, ManagerDao, RoomDao, ApproveDao, PhoDao
+from .entity.SysManager import SysManager
+from .entity.SysRoom import SysRoom
+from .entity.SysUser import SysUser
 
 # 创建FastAPI应用
 app = FastAPI()
