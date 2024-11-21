@@ -150,10 +150,10 @@ def get_approve_list(page, status, current_user):
         if role_id == 1:
             if status is None:
                 total_count = session.query(SysApprove).count()
-                apps = session.query(SysApprove)
+                apps = session.query(SysApprove).order_by(SysApprove.create_time.desc())
             else:
                 total_count = session.query(SysApprove).filter_by(pro_status=status).count()
-                apps = session.query(SysApprove).filter_by(pro_status=status)
+                apps = session.query(SysApprove).filter_by(pro_status=status).order_by(SysApprove.create_time.desc())
         else:
             manager = session.query(SysManager).filter_by(user_id=current_user.id).first()
             if not manager:
@@ -161,10 +161,13 @@ def get_approve_list(page, status, current_user):
             manager_id = manager.id
             if status is None:
                 total_count = session.query(SysApprove).filter_by(manager_id=manager_id).count()
-                apps = session.query(SysApprove).filter_by(manager_id=manager_id)
+                apps = session.query(SysApprove).filter_by(manager_id=manager_id).order_by(
+                    SysApprove.create_time.desc())
             else:
                 total_count = session.query(SysApprove).filter_by(manager_id=manager_id, pro_status=status).count()
-                apps = session.query(SysApprove).filter_by(manager_id=manager_id, pro_status=status)
+                apps = session.query(SysApprove).filter_by(manager_id=manager_id, pro_status=status).order_by(
+                    SysApprove.create_time.desc())
+
         offset = (page - 1) * page_size
         all_apps_list = apps.offset(offset).limit(page_size).all()
         # 计算总页数
@@ -188,14 +191,17 @@ def get_approve_me(page, pro_status, current_user):
     try:
         if pro_status is None:
             total_count = session.query(SysApprove).filter_by(user_id=current_user.id).count()
-            apps = session.query(SysApprove).filter_by(user_id=current_user.id)
+            apps = session.query(SysApprove).filter_by(user_id=current_user.id).order_by(SysApprove.create_time.desc())
         else:
             total_count = session.query(SysApprove).filter_by(user_id=current_user.id, pro_status=pro_status).count()
-            apps = session.query(SysApprove).filter_by(user_id=current_user.id, pro_status=pro_status)
+            apps = session.query(SysApprove).filter_by(user_id=current_user.id, pro_status=pro_status).order_by(
+                SysApprove.create_time.desc())
+
         offset = (page - 1) * page_size
         all_apps_list = apps.offset(offset).limit(page_size).all()
         # 计算总页数
         total_pages = math.ceil(total_count / page_size)
+        # 调用方法构造 apps_dict_list
         apps_dict_list = construct_apps_dict_list(session, all_apps_list)
         return True, f"成功", total_pages, apps_dict_list
     except Exception as e:
