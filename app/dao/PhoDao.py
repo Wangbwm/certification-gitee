@@ -1,5 +1,5 @@
-from .Session import get_session
-from ..entity.SysPho import SysPho
+from app.dao.Session import get_session
+from app.entity.SysPho import SysPho
 
 
 def save_pho(file_location, app_id, app_type):

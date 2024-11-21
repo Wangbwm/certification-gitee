@@ -1,10 +1,10 @@
 import math
 
-from .Session import get_session
-from ..Utils.hash import *
-from ..entity.SysRole import SysRole
-from ..entity.SysUser import SysUser
-from ..entity.SysUserRole import SysUserRole
+from app.dao.Session import get_session
+from app.Utils.hash import *
+from app.entity.SysRole import SysRole
+from app.entity.SysUser import SysUser
+from app.entity.SysUserRole import SysUserRole
 
 
 # 创建新用户

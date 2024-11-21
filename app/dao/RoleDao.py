@@ -1,7 +1,7 @@
-from .Session import get_session
-from ..entity.SysRole import SysRole
-from ..entity.SysUser import SysUser
-from ..entity.SysUserRole import SysUserRole
+from app.dao.Session import get_session
+from app.entity.SysRole import SysRole
+from app.entity.SysUser import SysUser
+from app.entity.SysUserRole import SysUserRole
 
 
 def get_role_by_user(user_id):

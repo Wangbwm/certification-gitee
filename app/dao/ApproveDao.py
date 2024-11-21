@@ -1,14 +1,14 @@
 import math
 from datetime import datetime
 
-from .Session import Session, get_session
-from ..entity.SysApprove import SysApprove
-from ..entity.SysManager import SysManager
-from ..entity.SysPho import SysPho
-from ..entity.SysRoom import SysRoom
-from ..entity.SysStation import SysStation
-from ..entity.SysUser import SysUser
-from ..entity.SysUserRole import SysUserRole
+from app.dao.Session import Session, get_session
+from app.entity.SysApprove import SysApprove
+from app.entity.SysManager import SysManager
+from app.entity.SysPho import SysPho
+from app.entity.SysRoom import SysRoom
+from app.entity.SysStation import SysStation
+from app.entity.SysUser import SysUser
+from app.entity.SysUserRole import SysUserRole
 
 
 def get_room_info(session: Session, room_id: int):

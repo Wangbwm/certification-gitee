@@ -10,16 +10,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from starlette.staticfiles import StaticFiles
 
-from .Utils.logger import log
-from .dao import UserDao, RoleDao, ManagerDao, RoomDao, ApproveDao, PhoDao
-from .entity.SysManager import SysManager
-from .entity.SysRoom import SysRoom
-from .entity.SysUser import SysUser
+from app.Utils.logger import log
+from app.dao import UserDao, RoleDao, ManagerDao, RoomDao, ApproveDao, PhoDao
+from app.entity.SysManager import SysManager
+from app.entity.SysRoom import SysRoom
+from app.entity.SysUser import SysUser
 
 # 创建FastAPI应用
 app = FastAPI()
 # 挂载静态文件目录
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 logger = log()
 """
@@ -40,7 +40,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 24 * 60
 INIT_PASSWORD = "password"
 
 # 照片文件夹
-PHOTO_DIR = "app/static/photos"
+PHOTO_DIR = "static/photos"
 
 # OAuth2PasswordBearer会创建一个依赖项来验证令牌
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

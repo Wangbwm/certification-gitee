@@ -1,10 +1,10 @@
 import math
 
-from .Session import get_session, Session
-from ..entity.SysManager import SysManager
-from ..entity.SysRoom import SysRoom
-from ..entity.SysStation import SysStation
-from ..entity.SysUser import SysUser
+from app.dao.Session import get_session, Session
+from app.entity.SysManager import SysManager
+from app.entity.SysRoom import SysRoom
+from app.entity.SysStation import SysStation
+from app.entity.SysUser import SysUser
 
 
 def get_manager_info(session: Session, manager_id: int):

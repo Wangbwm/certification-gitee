@@ -1,8 +1,8 @@
 import math
 
-from .Session import get_session
-from ..entity.SysManager import SysManager
-from ..entity.SysUser import SysUser
+from app.dao.Session import get_session
+from app.entity.SysManager import SysManager
+from app.entity.SysUser import SysUser
 
 
 def get_manager(user):

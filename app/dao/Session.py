@@ -1,12 +1,28 @@
+import os
+
 from sqlalchemy import create_engine, func, true, false
 from sqlalchemy.orm import sessionmaker
 
 import yaml
 
-# 读取YAML配置文件
-with open('app/config/database.yaml', 'r') as file:
-    db_config = yaml.safe_load(file)
-default_db_config = db_config['mysql']
+
+def get_db_config():
+    # 获取环境变量，如果ENV变量没有设置，则默认为'dev'
+    env = os.getenv('ENV', 'dev')
+
+    # 根据环境变量加载相应的数据库配置
+    with open('config/database.yaml', 'r') as file:
+        db_config = yaml.safe_load(file)
+
+    # 检查环境变量是否有效，并选择相应的配置
+    if env in db_config['mysql']:
+        return db_config['mysql'][env]
+    else:
+        raise ValueError(f"Unsupported environment: {env}")
+
+
+# 使用函数获取数据库配置
+default_db_config = get_db_config()
 
 # 创建SQLAlchemy引擎
 engine = create_engine(
