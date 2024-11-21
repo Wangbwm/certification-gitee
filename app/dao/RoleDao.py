@@ -2,9 +2,9 @@ import yaml
 from sqlalchemy import create_engine, func, true, false
 from sqlalchemy.orm import sessionmaker
 
-from entity.SysRole import SysRole
-from entity.SysUser import SysUser
-from entity.SysUserRole import SysUserRole
+from ..entity.SysRole import SysRole
+from ..entity.SysUser import SysUser
+from ..entity.SysUserRole import SysUserRole
 
 # 读取YAML配置文件
 with open('config/database.yaml', 'r') as file:

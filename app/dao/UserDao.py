@@ -3,10 +3,10 @@ import math
 from sqlalchemy import create_engine, func, true, false
 from sqlalchemy.orm import sessionmaker
 
-from entity.SysRole import SysRole
-from entity.SysUserRole import SysUserRole
-from entity.SysUser import SysUser
-from Utils.hash import *
+from ..entity.SysRole import SysRole
+from ..entity.SysUserRole import SysUserRole
+from ..entity.SysUser import SysUser
+from ..Utils.hash import *
 import yaml
 
 # 读取YAML配置文件
