@@ -10,7 +10,7 @@ from ..Utils.hash import *
 import yaml
 
 # 读取YAML配置文件
-with open('config/database.yaml', 'r') as file:
+with open('../config/database.yaml', 'r') as file:
     db_config = yaml.safe_load(file)
 default_db_config = db_config['mysql']
 
