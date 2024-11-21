@@ -4,6 +4,8 @@ FROM python:3.10
 #
 WORKDIR /code
 
+ENV ENV=pro
+
 #
 COPY ./requirements.txt /code/requirements.txt
 
