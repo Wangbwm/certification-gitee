@@ -19,7 +19,7 @@ from .entity.SysUser import SysUser
 # 创建FastAPI应用
 app = FastAPI()
 # 挂载静态文件目录
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("app/static", StaticFiles(directory="static"), name="static")
 
 logger = log()
 """
