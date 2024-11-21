@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from starlette.staticfiles import StaticFiles
 
-from Utils.logger import log
+from .Utils.logger import log
 from dao import UserDao, RoleDao, ManagerDao, RoomDao, ApproveDao, PhoDao
 from entity.SysManager import SysManager
 from entity.SysRoom import SysRoom
