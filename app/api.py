@@ -564,7 +564,7 @@ async def approve_open(room_id: int = Body(required=True),
 
 # 获得审批工单
 @app.get("/approve/list", response_model=dict)
-async def get_approve_list(pro_status: bool,
+async def get_approve_list(pro_status: Optional[bool] = None,
                            page: int = 1,
                            current_user: SysUser = Depends(get_current_user)):
     res = ApproveDao.get_approve_list(page, pro_status, current_user)
@@ -580,7 +580,7 @@ async def get_approve_list(pro_status: bool,
 
 # 获得自己发起的审批工单
 @app.get("/approve/me", response_model=dict)
-async def get_approve_list(pro_status: bool,
+async def get_approve_list(pro_status: Optional[bool] = None,
                            page: int = 1,
                            current_user: SysUser = Depends(get_current_user)):
     res = ApproveDao.get_approve_me(page, pro_status, current_user)
