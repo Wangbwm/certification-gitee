@@ -1,30 +1,10 @@
 import math
 
-from sqlalchemy import create_engine, func, true, false
-from sqlalchemy.orm import sessionmaker
-
-from ..entity.SysRole import SysRole
-from ..entity.SysUserRole import SysUserRole
-from ..entity.SysUser import SysUser
+from .Session import get_session
 from ..Utils.hash import *
-import yaml
-
-# 读取YAML配置文件
-with open('../config/database.yaml', 'r') as file:
-    db_config = yaml.safe_load(file)
-default_db_config = db_config['mysql']
-
-# 创建SQLAlchemy引擎
-engine = create_engine(
-    f"mysql+pymysql://{default_db_config['user']}:{default_db_config['password']}@{default_db_config['host']}:{default_db_config['port']}/{default_db_config['database']}?charset=utf8")
-
-# 创建会话类型
-Session = sessionmaker(bind=engine)
-
-
-# 创建会话实例
-def get_session():
-    return Session()
+from ..entity.SysRole import SysRole
+from ..entity.SysUser import SysUser
+from ..entity.SysUserRole import SysUserRole
 
 
 # 创建新用户

@@ -1,32 +1,11 @@
 import math
 
-import yaml
-from sqlalchemy import create_engine, func, true, false
-from sqlalchemy.orm import sessionmaker
-
+from .Session import get_session, Session
 from ..entity.SysManager import SysManager
-from ..entity.SysRole import SysRole
 from ..entity.SysRoom import SysRoom
 from ..entity.SysStation import SysStation
 from ..entity.SysUser import SysUser
-from ..entity.SysUserRole import SysUserRole
 
-# 读取YAML配置文件
-with open('../config/database.yaml', 'r') as file:
-    db_config = yaml.safe_load(file)
-default_db_config = db_config['mysql']
-
-# 创建SQLAlchemy引擎
-engine = create_engine(
-    f"mysql+pymysql://{default_db_config['user']}:{default_db_config['password']}@{default_db_config['host']}:{default_db_config['port']}/{default_db_config['database']}?charset=utf8")
-
-# 创建会话类型
-Session = sessionmaker(bind=engine)
-
-
-# 创建会话实例
-def get_session():
-    return Session()
 
 def get_manager_info(session: Session, manager_id: int):
     """根据经理ID获取经理的相关信息"""
