@@ -628,6 +628,9 @@ async def open_photograph_in(
         file: UploadFile = File(...),
         approve_id: int = Form(...),
         current_user: SysUser = Depends(get_current_user)):
+    # 检测是不是图片格式
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=403, detail="File type error")
     # 如果不存在上传目录，则创建它
     if not os.path.exists(PHOTO_DIR):
         os.makedirs(PHOTO_DIR)
@@ -665,6 +668,9 @@ async def open_photograph_out(
         file: UploadFile = File(...),
         approve_id: int = Form(...),
         current_user: SysUser = Depends(get_current_user)):
+    # 检测是不是图片格式
+    if not file.content_type.startswith("image/"):
+        raise HTTPException(status_code=403, detail="File type error")
     # 如果不存在上传目录，则创建它
     if not os.path.exists(PHOTO_DIR):
         os.makedirs(PHOTO_DIR)
